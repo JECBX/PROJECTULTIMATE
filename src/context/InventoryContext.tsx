@@ -163,7 +163,6 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({ children 
   const filterProducts = (filters: { 
     categories?: string[]; 
     brands?: string[]; 
-    types?: string[];
     stockLevel?: 'all' | 'low' | 'normal' | 'high';
     expirationStatus?: 'all' | 'expiring-soon' | 'good';
   }) => {
@@ -176,11 +175,6 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({ children 
       // Filter by brands
       if (filters.brands && filters.brands.length > 0) {
         if (!filters.brands.includes(product.brand)) return false;
-      }
-
-      // Filter by types
-      if (filters.types && filters.types.length > 0) {
-        if (!filters.types.includes(product.type)) return false;
       }
 
       // Filter by stock level
@@ -212,7 +206,7 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({ children 
     multiTransactions,
     categories,
     brands,
-    productTypes,
+    suppliers,
     loading,
     addProduct,
     updateProduct,
