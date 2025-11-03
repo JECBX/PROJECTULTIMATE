@@ -65,6 +65,14 @@ export interface Brand {
   name: string;
 }
 
+export interface Supplier {
+  id: string;
+  name: string;
+  contact?: string;
+  phone?: string;
+  email?: string;
+}
+
 export interface DashboardMetric {
   title: string;
   value: number | string;

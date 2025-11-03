@@ -42,6 +42,7 @@ const Transactions: React.FC = () => {
       {showAddForm && hasPermission('add') ? (
         <MultiTransactionForm
           products={products}
+          suppliers={suppliers}
           onSubmit={handleFormSubmit}
           onCancel={handleFormCancel}
         />

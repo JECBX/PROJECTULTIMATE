@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Product, Category, Brand } from '../../types';
+import { Product, Category, Brand, Supplier } from '../../types';
 import { Search, Filter, RefreshCw, AlertTriangle, Package, Trash2, CreditCard as Edit, Eye } from 'lucide-react';
 import { useSettings } from '../../context/SettingsContext';
 import { useAuth } from '../../context/AuthContext';
@@ -8,6 +8,7 @@ interface ProductListProps {
   products: Product[];
   categories: Category[];
   brands: Brand[];
+  suppliers: Supplier[];
   getCategoryById: (id: string) => Category | undefined;
   getBrandById: (id: string) => Brand | undefined;
   onEdit: (id: string) => void;
@@ -22,6 +23,7 @@ const ProductList: React.FC<ProductListProps> = ({
   brands,
   getCategoryById,
   getBrandById,
+  getSupplierById,
   onEdit,
   onDelete,
   onView,

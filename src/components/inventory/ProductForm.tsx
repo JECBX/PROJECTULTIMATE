@@ -16,6 +16,7 @@ export default function ProductForm({
   initialProduct,
   categories,
   brands,
+  suppliers,
   onSubmit,
   onCancel 
 }: ProductFormProps) {

@@ -13,7 +13,8 @@ import {
   products as initialProducts, 
   transactions as initialTransactions,
   categories as initialCategories,
-  brands as initialBrands
+  brands as initialBrands,
+  suppliers as initialSuppliers
 } from '../data/mockData';
 
 class InventoryDatabase extends Dexie {
@@ -22,6 +23,7 @@ class InventoryDatabase extends Dexie {
   multiTransactions!: Table<MultiTransaction, string>;
   categories!: Table<Category, string>;
   brands!: Table<Brand, string>;
+  suppliers!: Table<Supplier, string>;
   
   constructor() {
     super('InventoryDatabase');
@@ -31,7 +33,8 @@ class InventoryDatabase extends Dexie {
       transactions: 'id, transactionNumber, productId, type, date, createdBy, syncStatus',
       multiTransactions: 'id, transactionNumber, type, date, createdBy, syncStatus',
       categories: 'id, name',
-      brands: 'id, name'
+      brands: 'id, name',
+      suppliers: 'id, name, contact, phone, email'
     }).upgrade(tx => {
       // Migration for existing transactions
       return tx.table('transactions').toCollection().modify(transaction => {
@@ -56,6 +59,9 @@ class InventoryDatabase extends Dexie {
     
     // Add default brands
     await this.brands.bulkAdd(initialBrands);
+    
+    // Add default suppliers
+    await this.suppliers.bulkAdd(initialSuppliers);
     
     // Add sample products
     await this.products.bulkAdd(
@@ -296,6 +302,18 @@ class InventoryDatabase extends Dexie {
     };
     await this.brands.add(brand);
     return brand;
+  }
+
+  async addSupplier(name: string, contact?: string, phone?: string, email?: string) {
+    const supplier: Supplier = {
+      id: uuidv4(),
+      name,
+      contact,
+      phone,
+      email
+    };
+    await this.suppliers.add(supplier);
+    return supplier;
   }
 }
 

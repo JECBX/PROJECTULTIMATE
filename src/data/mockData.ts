@@ -1,4 +1,4 @@
-import { Product, Transaction, Category, Brand, ProductType } from '../types';
+import { Product, Transaction, Category, Brand, Supplier } from '../types';
 
 // Generate random dates within a range
 const randomDate = (start: Date, end: Date): string => {
@@ -33,14 +33,12 @@ export const brands: Brand[] = [
   { id: '6', name: 'Gamesa' },
 ];
 
-// Product Types
-export const productTypes: ProductType[] = [
-  { id: '1', name: 'Bebidas Carbonatadas' },
-  { id: '2', name: 'Galletas' },
-  { id: '3', name: 'Pan' },
-  { id: '4', name: 'Leche' },
-  { id: '5', name: 'Chocolates' },
-  { id: '6', name: 'Atún' },
+// Suppliers
+export const suppliers: Supplier[] = [
+  { id: '1', name: 'Distribuidora Central', contact: 'Juan Pérez', phone: '0414-1234567', email: 'ventas@distcentral.com' },
+  { id: '2', name: 'Mayorista El Buen Precio', contact: 'María González', phone: '0424-9876543' },
+  { id: '3', name: 'Comercial Los Andes', contact: 'Carlos Rodríguez', email: 'pedidos@losandes.com' },
+  { id: '4', name: 'Proveedor Local', contact: 'Ana Martínez', phone: '0412-5555555' },
 ];
 
 // Products
@@ -51,7 +49,6 @@ export const products: Product[] = [
     description: 'Refresco carbonatado',
     category: '1',
     brand: '1',
-    type: '1',
     barcode: '7501055300105',
     currentStock: 24,
     minStockLevel: 10,
@@ -68,7 +65,6 @@ export const products: Product[] = [
     description: 'Paquete de galletas',
     category: '2',
     brand: '6',
-    type: '2',
     barcode: '7501000130421',
     currentStock: 8,
     minStockLevel: 15,
@@ -85,7 +81,6 @@ export const products: Product[] = [
     description: 'Pan de caja blanco',
     category: '3',
     brand: '3',
-    type: '3',
     barcode: '7501030428808',
     currentStock: 12,
     minStockLevel: 5,
@@ -102,7 +97,6 @@ export const products: Product[] = [
     description: 'Leche entera pasteurizada',
     category: '4',
     brand: '5',
-    type: '4',
     barcode: '7501055384455',
     currentStock: 18,
     minStockLevel: 10,
@@ -136,7 +130,6 @@ export const products: Product[] = [
     description: 'Atún en lata en agua',
     category: '6',
     brand: '4',
-    type: '6',
     barcode: '7501003344152',
     currentStock: 20,
     minStockLevel: 12,

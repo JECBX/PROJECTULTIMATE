@@ -12,10 +12,10 @@ const Inventory: React.FC = () => {
     products, 
     categories, 
     brands, 
-    productTypes, 
+    suppliers, 
     getCategoryById, 
     getBrandById, 
-    getProductTypeById, 
+    getSupplierById, 
     getProductById, 
     addProduct, 
     updateProduct, 
@@ -136,7 +136,7 @@ const Inventory: React.FC = () => {
         <ProductForm
           categories={categories}
           brands={brands}
-          productTypes={productTypes}
+          suppliers={suppliers}
           onSubmit={handleAddSubmit}
           onCancel={handleFormCancel}
         />
@@ -148,7 +148,7 @@ const Inventory: React.FC = () => {
           initialProduct={getProductById(editProductId)}
           categories={categories}
           brands={brands}
-          productTypes={productTypes}
+          suppliers={suppliers}
           onSubmit={handleEditSubmit}
           onCancel={handleFormCancel}
         />
@@ -170,10 +170,10 @@ const Inventory: React.FC = () => {
           products={products}
           categories={categories}
           brands={brands}
-          productTypes={productTypes}
+         suppliers={suppliers}
           getCategoryById={getCategoryById}
           getBrandById={getBrandById}
-          getProductTypeById={getProductTypeById}
+         getSupplierById={getSupplierById}
           onEdit={handleEditClick}
           onDelete={handleDeleteClick}
           onView={handleViewClick}

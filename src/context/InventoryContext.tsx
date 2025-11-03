@@ -7,7 +7,7 @@ import {
   MultiTransaction,
   Category, 
   Brand, 
-  ProductType 
+  Supplier 
 } from '../types';
 import { useNetwork } from './NetworkContext';
 
@@ -17,7 +17,7 @@ interface InventoryContextType {
   multiTransactions: MultiTransaction[];
   categories: Category[];
   brands: Brand[];
-  productTypes: ProductType[];
+  suppliers: Supplier[];
   loading: boolean;
   addProduct: (product: Omit<Product, 'id' | 'createdAt' | 'updatedAt' | 'syncStatus'>) => Promise<Product>;
   updateProduct: (id: string, product: Partial<Product>) => Promise<Product>;
@@ -28,7 +28,7 @@ interface InventoryContextType {
   getProductById: (id: string) => Product | undefined;
   getCategoryById: (id: string) => Category | undefined;
   getBrandById: (id: string) => Brand | undefined;
-  getProductTypeById: (id: string) => ProductType | undefined;
+  getSupplierById: (id: string) => Supplier | undefined;
   getProductsExpiringWithinDays: (days: number) => Product[];
   getProductsBelowStock: () => Product[];
   searchProducts: (query: string) => Promise<Product[]>;
@@ -63,7 +63,7 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({ children 
   const multiTransactions = useLiveQuery(() => db.multiTransactions?.toArray(), [], []) || [];
   const categories = useLiveQuery(() => db.categories?.toArray(), [], []) || [];
   const brands = useLiveQuery(() => db.brands?.toArray(), [], []) || [];
-  const productTypes = useLiveQuery(() => db.productTypes?.toArray(), [], []) || [];
+  const suppliers = useLiveQuery(() => db.suppliers?.toArray(), [], []) || [];
   
   // For pending sync count
   const pendingSyncItems = useLiveQuery(async () => {
@@ -136,8 +136,8 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({ children 
     return brands.find(brand => brand.id === id);
   };
 
-  const getProductTypeById = (id: string) => {
-    return productTypes.find(type => type.id === id);
+  const getSupplierById = (id: string) => {
+    return suppliers.find(supplier => supplier.id === id);
   };
 
   const getProductsExpiringWithinDays = (days: number) => {
@@ -223,7 +223,7 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({ children 
     getProductById,
     getCategoryById,
     getBrandById,
-    getProductTypeById,
+    getSupplierById,
     getProductsExpiringWithinDays,
     getProductsBelowStock,
     searchProducts,

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Product, MultiTransaction, TransactionItem } from '../../types';
+import { Product, MultiTransaction, TransactionItem, Supplier } from '../../types';
 import { X, ArrowDown, ArrowUp, Plus, Trash2, ShoppingCart, DollarSign } from 'lucide-react';
 import { useSettings } from '../../context/SettingsContext';
 
@@ -31,6 +31,8 @@ const MultiTransactionForm: React.FC<MultiTransactionFormProps> = ({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [priceUpdateMode, setPriceUpdateMode] = useState<Record<number, boolean>>({});
+  const [showNewSupplier, setShowNewSupplier] = useState(false);
+  const [newSupplier, setNewSupplier] = useState({ name: '', contact: '', phone: '', email: '' });
 
   const addItem = () => {
     setItems([...items, { productId: '', quantity: 1, unitPrice: 0, totalPrice: 0 }]);
@@ -132,6 +134,20 @@ const MultiTransactionForm: React.FC<MultiTransactionFormProps> = ({
     return formData.type === 'exit' ? product.sellingPrice : product.purchasePrice;
   };
 
+  const handleAddSupplier = async () => {
+    if (newSupplier.name.trim()) {
+      const supplier = await db.addSupplier(
+        newSupplier.name.trim(),
+        newSupplier.contact.trim() || undefined,
+        newSupplier.phone.trim() || undefined,
+        newSupplier.email.trim() || undefined
+      );
+      setFormData(prev => ({ ...prev, supplierName: supplier.name }));
+      setShowNewSupplier(false);
+      setNewSupplier({ name: '', contact: '', phone: '', email: '' });
+    }
+  };
+
   if (showConfirmation) {
     return (
       <div className="bg-white rounded-lg shadow-md p-6">
@@ -224,16 +240,86 @@ const MultiTransactionForm: React.FC<MultiTransactionFormProps> = ({
         {formData.type === 'entry' && (
           <div>
             <label htmlFor="supplierName" className="block text-sm font-medium text-gray-700 mb-1">
-              Nombre del Proveedor/Empresa <span className="text-red-500">*</span>
+              Proveedor <span className="text-red-500">*</span>
             </label>
-            <input
-              type="text"
-              id="supplierName"
-              value={formData.supplierName}
-              onChange={(e) => setFormData({ ...formData, supplierName: e.target.value })}
-              className={`w-full rounded-md shadow-sm ${errors.supplierName ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'}`}
-              placeholder="Ingrese el nombre del proveedor"
-            />
+            <div className="flex space-x-2">
+              {!showNewSupplier ? (
+                <>
+                  <select
+                    id="supplierName"
+                    value={formData.supplierName}
+                    onChange={(e) => setFormData({ ...formData, supplierName: e.target.value })}
+                    className={`flex-1 rounded-md shadow-sm ${errors.supplierName ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'}`}
+                  >
+                    <option value="">Seleccionar proveedor</option>
+                    {suppliers.map(supplier => (
+                      <option key={supplier.id} value={supplier.name}>
+                        {supplier.name}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    onClick={() => setShowNewSupplier(true)}
+                    className="px-3 py-2 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 whitespace-nowrap"
+                  >
+                    Nuevo
+                  </button>
+                </>
+              ) : (
+                <div className="flex-1 space-y-2">
+                  <input
+                    type="text"
+                    value={newSupplier.name}
+                    onChange={(e) => setNewSupplier({ ...newSupplier, name: e.target.value })}
+                    placeholder="Nombre del proveedor *"
+                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  />
+                  <div className="grid grid-cols-2 gap-2">
+                    <input
+                      type="text"
+                      value={newSupplier.contact}
+                      onChange={(e) => setNewSupplier({ ...newSupplier, contact: e.target.value })}
+                      placeholder="Contacto"
+                      className="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
+                    <input
+                      type="tel"
+                      value={newSupplier.phone}
+                      onChange={(e) => setNewSupplier({ ...newSupplier, phone: e.target.value })}
+                      placeholder="Teléfono"
+                      className="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
+                  </div>
+                  <input
+                    type="email"
+                    value={newSupplier.email}
+                    onChange={(e) => setNewSupplier({ ...newSupplier, email: e.target.value })}
+                    placeholder="Email"
+                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  />
+                  <div className="flex space-x-2">
+                    <button
+                      type="button"
+                      onClick={handleAddSupplier}
+                      className="px-3 py-2 bg-green-100 text-green-700 rounded-md hover:bg-green-200"
+                    >
+                      Guardar
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowNewSupplier(false);
+                        setNewSupplier({ name: '', contact: '', phone: '', email: '' });
+                      }}
+                      className="px-3 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
             {errors.supplierName && <p className="mt-1 text-sm text-red-600">{errors.supplierName}</p>}
           </div>
         )}
