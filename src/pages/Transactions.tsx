@@ -6,7 +6,7 @@ import { Plus } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Transactions: React.FC = () => {
-  const { multiTransactions, products, getProductById, addMultiTransaction, deleteMultiTransaction } = useInventory();
+  const { multiTransactions, products, suppliers, getProductById, addMultiTransaction, deleteMultiTransaction } = useInventory();
   const { hasPermission } = useAuth();
   const [showAddForm, setShowAddForm] = useState(false);
 
