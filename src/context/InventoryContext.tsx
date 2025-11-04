@@ -9,7 +9,6 @@ import {
   Brand, 
   Supplier 
 } from '../types';
-import { useNetwork } from './NetworkContext';
 
 interface InventoryContextType {
   products: Product[];
@@ -39,7 +38,6 @@ interface InventoryContextType {
     stockLevel?: 'all' | 'low' | 'normal' | 'high';
     expirationStatus?: 'all' | 'expiring-soon' | 'good';
   }) => Product[];
-  pendingSyncCount: number;
 }
 
 const InventoryContext = createContext<InventoryContextType | undefined>(undefined);
@@ -53,9 +51,7 @@ export const useInventory = () => {
 };
 
 export const InventoryProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { syncData } = useNetwork();
   const [loading, setLoading] = useState(true);
-  const [pendingSyncCount, setPendingSyncCount] = useState(0);
   
   // Use Dexie live queries to reactively update when DB changes
   const products = useLiveQuery(() => db.products?.toArray(), [], []) || [];
@@ -64,18 +60,6 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({ children 
   const categories = useLiveQuery(() => db.categories?.toArray(), [], []) || [];
   const brands = useLiveQuery(() => db.brands?.toArray(), [], []) || [];
   const suppliers = useLiveQuery(() => db.suppliers?.toArray(), [], []) || [];
-  
-  // For pending sync count
-  const pendingSyncItems = useLiveQuery(async () => {
-    const { products, transactions, multiTransactions } = await db.getPendingSyncItems();
-    return products.length + transactions.length + multiTransactions.length;
-  }, [], 0);
-  
-  useEffect(() => {
-    if (pendingSyncItems !== undefined) {
-      setPendingSyncCount(pendingSyncItems);
-    }
-  }, [pendingSyncItems]);
   
   useEffect(() => {
     // Mark as loaded once we have data
@@ -86,42 +70,30 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({ children 
 
   const addProduct = async (product: Omit<Product, 'id' | 'createdAt' | 'updatedAt' | 'syncStatus'>) => {
     const newProduct = await db.addProduct(product);
-    // Attempt to sync if we're online
-    syncData();
     return newProduct;
   };
 
   const updateProduct = async (id: string, updatedFields: Partial<Product>) => {
     const updatedProduct = await db.updateProduct(id, updatedFields);
-    // Attempt to sync if we're online
-    syncData();
     return updatedProduct;
   };
 
   const deleteProduct = async (id: string) => {
     await db.deleteProduct(id);
-    // Attempt to sync if we're online
-    syncData();
   };
 
   const addTransaction = async (transaction: Omit<Transaction, 'id' | 'syncStatus'>) => {
     const newTransaction = await db.addTransaction(transaction);
-    // Attempt to sync if we're online
-    syncData();
     return newTransaction;
   };
 
   const addMultiTransaction = async (transaction: Omit<MultiTransaction, 'id' | 'transactionNumber' | 'syncStatus'>) => {
     const newTransaction = await db.addMultiTransaction(transaction);
-    // Attempt to sync if we're online
-    syncData();
     return newTransaction;
   };
 
   const deleteMultiTransaction = async (id: string) => {
     await db.deleteMultiTransaction(id);
-    // Attempt to sync if we're online
-    syncData();
   };
 
   const getProductById = (id: string) => {
@@ -222,7 +194,6 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({ children 
     getProductsBelowStock,
     searchProducts,
     filterProducts,
-    pendingSyncCount
   };
 
   return (

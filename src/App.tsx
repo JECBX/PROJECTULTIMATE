@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { InventoryProvider } from './context/InventoryContext';
-import { NetworkProvider } from './context/NetworkContext';
 import { SettingsProvider } from './context/SettingsContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Layout from './components/layout/Layout';
@@ -10,7 +9,6 @@ import Dashboard from './pages/Dashboard';
 import Inventory from './pages/Inventory';
 import Transactions from './pages/Transactions';
 import Settings from './pages/Settings';
-import OfflineBanner from './components/common/OfflineBanner';
 import InstallPrompt from './components/common/InstallPrompt';
 import VerificationPrompt from './components/common/VerificationPrompt';
 
@@ -33,7 +31,6 @@ const AppRoutes: React.FC = () => {
 
   return (
     <Layout>
-      <OfflineBanner />
       <InstallPrompt />
       <VerificationPrompt />
       <Routes>
@@ -51,15 +48,13 @@ const AppRoutes: React.FC = () => {
 function App() {
   return (
     <AuthProvider>
-      <NetworkProvider>
-        <SettingsProvider>
-          <InventoryProvider>
-            <Router>
-              <AppRoutes />
-            </Router>
-          </InventoryProvider>
-        </SettingsProvider>
-      </NetworkProvider>
+      <SettingsProvider>
+        <InventoryProvider>
+          <Router>
+            <AppRoutes />
+          </Router>
+        </InventoryProvider>
+      </SettingsProvider>
     </AuthProvider>
   );
 }
