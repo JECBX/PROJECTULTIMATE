@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { X, LayoutDashboard, Package, ClipboardList, Settings, AlertTriangle } from 'lucide-react';
+import { X, LayoutDashboard, Package, ClipboardList, Settings, WifiOff, AlertTriangle } from 'lucide-react';
+import { useNetwork } from '../../context/NetworkContext';
 import { useInventory } from '../../context/InventoryContext';
 
 interface SidebarProps {
@@ -9,6 +10,7 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
+  const { isOnline, pendingSyncCount } = useNetwork();
   const { getProductsBelowStock, getProductsExpiringWithinDays } = useInventory();
   
   // Get alert count
@@ -48,6 +50,22 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               <X size={20} />
             </button>
           </div>
+          
+          {!isOnline && (
+            <div className="px-4 py-2 bg-amber-50 border-b border-amber-100 flex items-center">
+              <WifiOff size={16} className="text-amber-600 mr-2" />
+              <span className="text-sm text-amber-800">Sin conexión</span>
+            </div>
+          )}
+          
+          {pendingSyncCount > 0 && (
+            <div className="px-4 py-2 bg-blue-50 border-b border-blue-100 flex items-center justify-between">
+              <span className="text-sm text-blue-700">Pendientes de sincronizar</span>
+              <span className="text-xs font-medium bg-blue-600 text-white px-2 py-0.5 rounded-full">
+                {pendingSyncCount}
+              </span>
+            </div>
+          )}
           
           <div className="py-4 flex-grow">
             <ul className="space-y-1">

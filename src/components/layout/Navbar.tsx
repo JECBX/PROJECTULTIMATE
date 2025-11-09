@@ -1,16 +1,17 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, Package, Bell, User, LogOut } from 'lucide-react';
+import { Menu, Package, Bell, User, WifiOff, LogOut } from 'lucide-react';
 import { useInventory } from '../../context/InventoryContext';
 import { useAuth } from '../../context/AuthContext';
 
 interface NavbarProps {
   onMenuClick: () => void;
+  isOnline: boolean;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
+const Navbar: React.FC<NavbarProps> = ({ onMenuClick, isOnline }) => {
   const location = useLocation();
-  const { getProductsBelowStock, getProductsExpiringWithinDays } = useInventory();
+  const { getProductsBelowStock, getProductsExpiringWithinDays, pendingSyncCount } = useInventory();
   const { logout, currentUser } = useAuth();
   
   // Get alert count
@@ -63,6 +64,21 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
           </div>
           
           <div className="flex items-center space-x-4">
+            {!isOnline && (
+              <div className="flex items-center text-amber-200">
+                <WifiOff size={18} className="mr-1" />
+                <span className="text-sm font-medium">Offline</span>
+              </div>
+            )}
+            
+            {pendingSyncCount > 0 && (
+              <div className="hidden md:flex items-center text-blue-200">
+                <span className="text-xs px-2 py-0.5 bg-blue-700 rounded-full">
+                  {pendingSyncCount} {pendingSyncCount === 1 ? 'cambio' : 'cambios'} pendiente{pendingSyncCount === 1 ? '' : 's'}
+                </span>
+              </div>
+            )}
+            
             <Link 
               to="/" 
               className="relative p-2 rounded-full hover:bg-blue-500 transition-colors"
