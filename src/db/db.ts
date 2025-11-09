@@ -28,7 +28,7 @@ class InventoryDatabase extends Dexie {
   constructor() {
     super('InventoryDatabase');
     
-    this.version(2).stores({
+    this.version(3).stores({
       products: 'id, name, category, brand, barcode, currentStock, expirationDate, syncStatus, updatedAt',
       transactions: 'id, transactionNumber, productId, type, date, createdBy, syncStatus',
       multiTransactions: 'id, transactionNumber, type, date, createdBy, syncStatus',
