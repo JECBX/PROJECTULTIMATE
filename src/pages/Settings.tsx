@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useNetwork } from '../context/NetworkContext';
 import { useInventory } from '../context/InventoryContext';
-import { Database, WifiOff, RefreshCw, Download, HardDrive, Upload, Book } from 'lucide-react';
+import { Database, WifiOff, RefreshCw, Download, HardDrive, Upload, Book, Users } from 'lucide-react';
 import CurrencySettings from '../components/settings/CurrencySettings';
 import UserManual from '../components/settings/UserManual';
+import UserManagement from '../components/settings/UserManagement';
 import { useAuth } from '../context/AuthContext';
 
 const Settings: React.FC = () => {
   const { isOnline, lastSynced, syncPending, syncData } = useNetwork();
   const { pendingSyncCount } = useInventory();
-  const { currentUser, hasPermission } = useAuth();
+  const { currentUser, hasPermission, users } = useAuth();
   const [installPromptEvent, setInstallPromptEvent] = useState<any>(null);
   const [isStandalone, setIsStandalone] = useState(false);
   const [showManual, setShowManual] = useState(false);
+  const [showUserManagement, setShowUserManagement] = useState(false);
   
   // Listen for the beforeinstallprompt event
   useEffect(() => {
@@ -101,8 +103,28 @@ const Settings: React.FC = () => {
                 <span>Eliminar</span>
               </div>
             </div>
+            
+            {/* Admin-only User Management Button */}
+            {currentUser?.role === 'admin' && (
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <button
+                  onClick={() => setShowUserManagement(!showUserManagement)}
+                  className="flex items-center px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors"
+                >
+                  <Users size={20} className="mr-2" />
+                  {showUserManagement ? 'Ocultar' : 'Gestionar'} Usuarios ({users.length})
+                </button>
+              </div>
+            )}
           </div>
         </div>
+        
+        {/* User Management - Admin Only */}
+        {showUserManagement && currentUser?.role === 'admin' && (
+          <div className="mb-6">
+            <UserManagement />
+          </div>
+        )}
         
         {showManual && (
           <div className="mb-6">

@@ -98,6 +98,10 @@ export interface User {
   username: string;
   role: 'admin' | 'employee';
   displayName: string;
+  id: string;
+  email?: string;
+  createdAt: string;
+  isActive: boolean;
 }
 
 export enum UserRole {
