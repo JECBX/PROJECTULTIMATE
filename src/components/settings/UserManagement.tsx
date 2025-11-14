@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { User, UserRole } from '../../types';
-import { Users, Plus, Edit, Trash2, Eye, EyeOff, Shield, UserCheck, UserX } from 'lucide-react';
+import { Users, Plus, CreditCard as Edit, Trash2, Eye, EyeOff, Shield, UserCheck, UserX } from 'lucide-react';
 
 const UserManagement: React.FC = () => {
   const { users, addUser, updateUser, deleteUser, toggleUserStatus, currentUser } = useAuth();
